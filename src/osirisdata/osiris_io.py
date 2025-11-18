@@ -1,5 +1,7 @@
 from pymongo import MongoClient
 
+from osirisdata.utils import osiris_utils
+
 
 class OsirisIO:
 
@@ -7,13 +9,24 @@ class OsirisIO:
         client = MongoClient(connection)
         self.osiris = client[database]
 
+        self.fields = self.osiris["adminFields"].find()
+        self.types = self.osiris["adminTypes"].find()
+
+        self.validators = osiris_utils.getValidators(self.types, self.fields)
+
+
     def _check_activity(self, element: dict):
-        activity_type = element.get("subtype")
+        activity_type = element.get("type")
         if not activity_type:
+            raise KeyError("Activity needs 'type' key")
+        activity_subtype = element.get("subtype")
+        if not activity_subtype:
             raise KeyError("Activity needs 'subtype' key")
-        osiris_type = self.osiris["adminTypes"].find_one({"id": activity_type})
+        osiris_type = self.osiris["adminTypes"].find_one({"id": activity_subtype})
         if not osiris_type:
             raise KeyError(f"Activity type {activity_type} not found in OSIRIS")
+        # validate(element)
+
 
     def get_user_id(self, name_last: str, name_first: str = "", orcid: str=None):
         if orcid:

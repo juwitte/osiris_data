@@ -1,9 +1,7 @@
 .vscode
 .venv
 examples/*
-
 config.ini
-
 tests/*
 build
 venv
