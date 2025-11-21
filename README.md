@@ -25,10 +25,6 @@ Now you can install the python library **osirisdata** and all dependencies. Ther
 make install
 ```
 
-Additionally, you have to copy the **configuration file** `config.default.ini` and rename it to `config.ini`. 
-In this file, you must modify the values according to your needs. 
-
-
 ### Use OsirisIO
 
 This is a short example on how to use the OsirisIO function:
@@ -50,7 +46,7 @@ OSIRIS.add_activity(activity)
 
 ### Use OpenAlexParser
 
-Setup OpenAlexParser
+Setup OpenAlexParser, you have to find out your institute id from OpenAlex.
 ```python
 OSIRIS = OsirisIO(connection="mongodb://localhost:27017/", database="osiris")
 OPENALEX = OpenAlexParser(OSIRIS, YourInstituteId, YourEmail)
