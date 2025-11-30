@@ -75,19 +75,27 @@ MODULES = {
 # Find out if changing default enum values is written to mongo and where
 # Find out if fields list has same naming convention as module list (AdminTypes in MongoDB)
 
+def parse_admin_field(field : dict):
+    pass
 
-def build_validator(key, modules: list[str], field_dict):
+def build_validator(key, type_fields: list[str], admin_fields: list[dict]):
     data_structure = {}
 
+    # Get ids from admin_fields
+    admin_fields_ids = [f["id"] for f in admin_fields]
+    admin_fields_dict = zip(admin_fields_ids, admin_fields)
+
     # Mandatory for OSIRIS functioning:
-    if not "date" in modules:
-        modules.append("date")
+    if not "date" in type_fields:
+        type_fields.append("date")
+
+    type_field_names = [tf["id"] for tf in type_fields if tf["type"] == "field"]
 
     # Main loop on modules
-    for mod in modules:
+    for mod in type_field_names:
         mod = mod.strip("*")
-        if mod in field_dict: # first check admin field for new altered definitions and custom fields
-            data_structure[mod] = field_dict[mod]
+        if mod in admin_fields_dict.keys(): # first check admin field for new altered definitions and custom fields
+            data_structure[mod] = parse_admin_field(admin_fields_dict[mod])
         elif mod in MODULES: # find field in default list
             for field_name, field_info in MODULES[mod].items():
                 data_structure[field_name] = field_info
@@ -96,7 +104,7 @@ def build_validator(key, modules: list[str], field_dict):
     return create_model(key, **data_structure)
 
 
-def getValidators(types: list[dict], fields: list[dict]) -> dict:
+def getValidators(admin_types: list[dict], admin_fields: list[dict]) -> dict:
     '''
     
     Input:
@@ -107,8 +115,7 @@ def getValidators(types: list[dict], fields: list[dict]) -> dict:
         dict where keys are [type]-[subtype] of all defined activity types in OSIRIS and value are pydantic classes to validate the 
     '''
     validators = {}
-    field_dict = {field["id"]: field["format"] for field in fields}
-    for t in types:
+    for t in admin_types:
         key = f"{t['type']}-{t['subtype']}"
-        validators[key] = build_validator(key, t["modules"], field_dict)
+        validators[key] = build_validator(key, t["fields"], admin_fields)
     return validators
