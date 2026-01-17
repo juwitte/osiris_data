@@ -9,8 +9,8 @@ class OsirisIO:
         client = MongoClient(connection)
         self.osiris = client[database]
 
-        self.fields = self.osiris["adminFields"].find()
         self.types = self.osiris["adminTypes"].find()
+        self.fields = self.osiris["adminFields"].find()
 
         self.validators = osiris_utils.getValidators(self.types, self.fields)
 

@@ -1,5 +1,6 @@
 from enum import Enum
-from typing import Annotated
+from typing import Annotated, Literal
+from bson.objectid import ObjectId
 
 from pydantic import BaseModel, Field, ValidationError, create_model
 
@@ -62,9 +63,17 @@ MODULES = {
         "funding_type": (str | None)
     },
     "guest-category": { "category": (str | None)},
-    "gender": (Gender | None),
-    "nationality": {"country": Annotated[str, Field()]}
-    # TODO: continue
+    "gender": {"gender": (Gender | None)},
+    "nationality": {"country": (Country | None)}, # TODO: countries are in DB so deliver them upstream with other data
+    "country" : {"country": (Country | None)}, # TODO: countries are in DB so deliver them upstream with other data
+    "countries": {"countries": Annotated[list[Country]]}, # TODO: countries are in DB so deliver them upstream with other data as ENUM
+    "abstract": {"abstract": (str | None)},
+    "isbn": {"isbn": (str | None)}, # TODO: check isbn structure
+    "issn": {"issn": Annotated[str, Field(pattern=r"^\d{4}-\d{4}$")]},
+    "issue": {"issue": (str | None)},
+    "iteration": {"iteration": (str | None)}, # TODO: check if iteration is enum
+    "journal": {"journal": (str | None), "journal_id": (ObjectId | None) },
+    # TODO: continue list
 }
 
 
@@ -112,10 +121,10 @@ def getValidators(admin_types: list[dict], admin_fields: list[dict]) -> dict:
         fields: List of all fields from collection 'AdminFields'
 
     Output:
-        dict where keys are [type]-[subtype] of all defined activity types in OSIRIS and value are pydantic classes to validate the 
+        dict where keys are [type]-[subtype] of all defined activity types in OSIRIS and value are pydantic classes to validate the input data
     '''
     validators = {}
     for t in admin_types:
-        key = f"{t['type']}-{t['subtype']}"
+        key = f"{t['parent']}-{t['id']}"
         validators[key] = build_validator(key, t["fields"], admin_fields)
     return validators

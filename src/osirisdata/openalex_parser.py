@@ -208,7 +208,13 @@ class OpenAlexParser:
         authors = []
         for author in work["authorships"]:
             # match via name and ORCID
-            name = HumanName(author["author"]["display_name"])
+            
+            p_name = author["author"]["display_name"]
+            if not p_name:
+                p_name = author["raw_author_name"]
+
+            name = HumanName(p_name)
+
             orcid = author["author"].get("orcid")
             if orcid:
                 orcid = orcid.replace("https://orcid.org/", "")
