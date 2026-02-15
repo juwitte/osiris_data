@@ -8,6 +8,7 @@ dependencies = [
   "nameparser",
   "levenshtein",
   "requests",
-  "pydantic"
+  "pydantic",
+  "pydantic-extra-types"
 ]
 license = "MIT"

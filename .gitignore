@@ -6,3 +6,5 @@ tests/*
 build
 venv
 src/osirisdata.egg-info
+activity-fields.json
+datastructure.json
