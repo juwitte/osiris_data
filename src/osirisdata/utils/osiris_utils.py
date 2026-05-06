@@ -32,94 +32,93 @@ PROJECTS = Literal[""]
 MODULES = {
     "authors": {"authors": Annotated[list[Person], Field(min_length=1)]},
     "author-table": {"authors": Annotated[list[Person], Field(min_length=1)]},
-    "book-series": {"series": (str | None)},
-    "book-title": {"book": (str | None)},
-    "city": {"city": (str | None)},
-    "conference": {"conference": (str | None)},
-    "correction": {"correction": (bool | None)},
+    "book-series": {"series": str },
+    "book-title": {"book": str },
+    "city": {"city": str },
+    "conference": {"conference": str },
+    "correction": {"correction": bool },
     "date-range": {"start": SplitDate, "end": SplitDate},
     "date-range-ongoing": {"start": SplitDate, "end": None},
     "date": {
         f_name: Annotated[
-            f_info.asdict()["annotation"] | None,
+            f_info.asdict()["annotation"] ,
             *f_info.asdict()["metadata"],
             Field(**f_info.asdict()["attributes"]),
         ]
         for f_name, f_info in SplitDate.model_fields.items()
     },
-    "details": {"details": (str | None)},
-    "doctype": {"doc_type": (str | None)},
+    "details": {"details": str },
+    "doctype": {"doc_type": str },
     "doi": {"str": Annotated[str, Field(pattern="^10\..*")]},
     "edition": {"edition": Annotated[int, Field(ge=1)]},
     "editors": {"editors": list[Person]},
-    "editorial": {"editor_type": (str | None)},
+    "editorial": {"editor_type": str },
     "event-select": {
         # Only frontend?
     },
-    "funding_type": {"funding_type": (str | None)},
-    "guest-category": {"category": (str | None)},
-    "gender": {"gender": (Literal["d", "f", "m", "-"] | None)},
+    "funding_type": {"funding_type": str },
+    "guest-category": {"category": str },
+    "gender": {"gender": Literal["d", "f", "m", "-"] },
     "nationality": {
-        "country": (COUNTRY | None)
+        "country": COUNTRY 
     },
     "country": {
-        "country": (COUNTRY | None)
+        "country": COUNTRY 
     },
     "countries": {
-        "countries": (list[COUNTRY] | None)
+        "countries": list[COUNTRY] 
     },
-    "abstract": {"abstract": (str | None)},
-    "isbn": {"isbn": (ISBN | None)},  # TODO: check isbn structure
+    "abstract": {"abstract": str },
+    "isbn": {"isbn": ISBN },  # TODO: check isbn structure
     "issn": {"issn": Annotated[str, Field(pattern=r"^\d{4}-\d{4}$")]},
-    "issue": {"issue": (str | None)},
-    "iteration": {"iteration": (Literal["once", "annual"] | None)},
-    "journal": {"journal": (str | None), "journal_id": (ObjectId | None)},
-    "lecture-invited": {"lecture_invited": (bool | None)},
-    "lecture-type": {"lecture_type": (Literal["short", "long", "repetition"] | None)},
-    "license": {"license": (str | None)},
-    "link": {"link": (UrlConstraints | None)},
-    "location": {"location": (str | None)},
-    "magazine": {"magazine": (str | None)},
-    "online-ahead-of-print": {"epub": (bool | None)},
-    "openaccess": {"open_access": (bool | None)},
+    "issue": {"issue": str },
+    "iteration": {"iteration": Literal["once", "annual"] },
+    "journal": {"journal": str , "journal_id": str },
+    "lecture-invited": {"lecture_invited": bool },
+    "lecture-type": {"lecture_type": Literal["short", "long", "repetition"] },
+    "license": {"license": str },
+    "link": {"link": UrlConstraints },
+    "location": {"location": str },
+    "magazine": {"magazine": str },
+    "online-ahead-of-print": {"epub": bool },
+    "openaccess": {"open_access": bool },
     "openaccess-status": {
         "oa_status": (
             Literal["closed", "open", "diamond", "gold", "green", "hybrid", "bronze"]
-            | None
+            
         )
     },
-    "pages": {"pages": (str | None)},
-    "peer-reviewed": {"peer-reviewed": (bool | None)},
+    "pages": {"pages": str },
+    "peer-reviewed": {"peer-reviewed": bool },
     "person": {
-        "name": (str | None),  # TODO: improve person name with pattern check
-        "affiliation": (str | None),
-        "academic_title": (str | None),
+        "name": str ,  # TODO: improve person name with pattern check
+        "affiliation": str ,
+        "academic_title": str ,
     },
     "person-only": {
-        "name": (str | None)
+        "name": str 
     },  # TODO: improve person name with pattern check
-    "person-organization": {"name": (str | None), "organization": (str | None)},
-    "projects": {"projects": (list[PROJECTS] | None)},  # TODO: get projects from DB
+    "person-organization": {"name": str , "organization": str },
+    "projects": {"projects": list[PROJECTS] },  # TODO: get projects from DB
     "pub-language": {
-        "pub_language": (Literal["de", "en", "fr", "es", "it", "other"] | None)
+        "pub_language": Literal["de", "en", "fr", "es", "it", "other"] 
     },
-    "publisher": {"publisher": (str | None)},
-    "pubmed": {"pubmed": (int | None)},
-    "pubtype": {"pubtype": (str | None)},
-    "review-type": {"review-type": (str | None)},
-    "role": {"role": (str | None)},
+    "publisher": {"publisher": str },
+    "pubmed": {"pubmed": int },
+    "pubtype": {"pubtype": str },
+    "review-type": {"review-type": str },
+    "role": {"role": str },
     "scientist": {"authors": Annotated[list[Person], Field(min_length=1)]},
     "semester-select": {},
     "scope": {
-        "scope": (Literal["local", "regional", "national", "international"] | None)
+        "scope": Literal["local", "regional", "national", "international"] 
     },
-    "software-link": {"link": (UrlConstraints | None)},
+    "software-link": {"link": UrlConstraints },
     "software-type": {
-        "software_type": (
-            Literal["software", "database", "dataset", "webtool", "report"] | None
-        )
+        "software_type": 
+            Literal["software", "database", "dataset", "webtool", "report"] 
     },
-    "software-venue": {"software_venue": (str | None)},
+    "software-venue": {"software_venue": str },
     "status": {"status": Literal["in progress", "completed", "aborted"]},
     "student-category": {
         "category": (
@@ -130,13 +129,13 @@ MODULES = {
                 "internship",
                 "other",
             ]
-            | None
+            
         )
     },
-    "tags": {"tags": (list[TAGS] | None)},  # TODO: DB lookup
+    "tags": {"tags": list[TAGS] },  # TODO: DB lookup
     "thesis": {
         "category": (
-            Literal["bachelor", "master", "diploma", "doctor", "habilitation"] | None
+            Literal["bachelor", "master", "diploma", "doctor", "habilitation"] 
         )
     },
     "supervisor": {"authors": Annotated[list[Person], Field(min_length=1)]},
@@ -144,29 +143,37 @@ MODULES = {
     "teaching-category": {
         "category": (
             Literal["lecture", "practical-lecture", "seminar", "project", "other"]
-            | None
+            
         )
     },
     "teaching-course": {
-        "title": (str | None),
-        "module": (str | None),
-        "module_id": (str | None),
+        "title": str ,
+        "module": str ,
+        "module_id": str ,
     },
     "title": {"title": str},
-    "subtitle": {"subtitle": (str | None)},
-    "university": {"publisher": (str | None)},
-    "version": {"version": (str | None)},
-    "venue": {"venue": (str | None)},
-    "volume": {"volume": (str | None)},
+    "subtitle": {"subtitle": str },
+    "university": {"publisher": str },
+    "version": {"version": str },
+    "venue": {"venue": str },
+    "volume": {"volume": str },
     "political_consultation": {
         "political_consultation": (Literal[
             "Gutachten", "Positionspapier", "Studie", "Sonstiges", ""
-        ] | None)
+        ] )
     },
-    "organization": {"organization": (str | None)},
+    "organization": {"organization": str },
     "organizations": {"organizations": list[str]},
 }
 
+# NO modules fields: history, units, 
+# Rendering:
+# metrics
+# quartile
+# affiliated
+# affiliated_positions
+# cooperative
+# rendered
 
 # TODO:
 # Change iteration from modules to fields (see AdminTypes in Mongo) to check which fields are defined as required
@@ -180,32 +187,36 @@ def parse_admin_field(field: dict):
     pass
 
 
-def build_validator(key: str, type_fields: list[dict], admin_fields: list[dict]):
+def build_validator(key: str, type_fields: list[dict], admin_fields_dict: dict):
     data_structure = {}
-
-    # Get ids from admin_fields
-    admin_fields_ids = [f["id"] for f in admin_fields]
-    admin_fields_dict = {x: y for x,y in zip(admin_fields_ids, admin_fields)}
 
     # Mandatory for OSIRIS functioning:
     date = {
         "type": "field",
-        "id": "date"
+        "id": "date",
+        "props": {
+            "required": True
+        }
     }
     if not date in type_fields:
         type_fields.append(date)
 
-    type_field_names = [tf["id"] for tf in type_fields if tf["type"] == "field"]
+    type_field_names = {tf["id"]:tf for tf in type_fields if tf["type"] == "field"}
+
 
     # Main loop on modules
-    for mod in type_field_names:
-        mod = mod.strip("*")
+    for mod in type_field_names.keys():
         if (
             mod in admin_fields_dict.keys()
-        ):  # first check admin field for new altered definitions and custom fields
+        ):  # first check admin field for new altered definitions and custom fields that override default modules
             data_structure[mod] = parse_admin_field(admin_fields_dict[mod])
-        elif mod in MODULES:  # find field in default list
+        elif mod in MODULES:  # find field in default module list
             for field_name, field_info in MODULES[mod].items():
+                props = type_field_names.get(mod, {}).get("props",{})
+                if not props:
+                    props = {}
+                if not props.get("required", False):
+                    field_info = field_info | None
                 data_structure[field_name] = field_info
         else:
             raise KeyError(
@@ -217,6 +228,16 @@ def build_validator(key: str, type_fields: list[dict], admin_fields: list[dict])
     return create_model(key, **data_structure)
 
 
+def set_global_var(osiris: Database):
+    global COUNTRY
+    COUNTRY = Literal[[x["iso"] for x in osiris["countries"].find()]]
+    global TAGS 
+    TAGS = Literal[[x for x in [y["value"] for y in osiris["adminGeneral"].find({"key": "tags"}) ]]]
+    global PROJECTS 
+    PROJECTS = Literal[[str(x["_id"]) for x in osiris["projects"].find()]]
+    return
+
+
 def getValidators(osiris: Database) -> dict:
     """
     Input:
@@ -225,14 +246,11 @@ def getValidators(osiris: Database) -> dict:
     Output:
         dict where keys are [type]-[subtype] of all defined activity types in OSIRIS and value are pydantic classes to validate the input data
     """
-    debug = True
+    debug = False
     admin_types = osiris["adminTypes"].find()
     admin_fields = osiris["adminFields"].find()
 
-    COUNTRY = Literal[[x["iso"] for x in osiris["countries"].find()]]
-    TAGS = Literal[[x for x in [y["value"] for y in osiris["adminGeneral"].find({"key": "tags"}) ]]]
-    PROJECTS = Literal[[x["_id"] for x in osiris["projects"].find()]]
-
+    set_global_var(osiris)
 
     if debug:
         print("Country:")
@@ -242,8 +260,13 @@ def getValidators(osiris: Database) -> dict:
         print("Projects:")
         print(PROJECTS)
 
+    # Get ids from admin_fields
+    admin_fields_ids = [f["id"] for f in admin_fields]
+    admin_fields_dict = {x: y for x,y in zip(admin_fields_ids, admin_fields)}
+
     validators = {}
     for t in admin_types:
         key = f"{t['parent']}-{t['id']}"
-        validators[key] = build_validator(key, t["fields"], admin_fields)
+        if t.get("fields"):
+            validators[key] = build_validator(key, t["fields"], admin_fields_dict)
     return validators
