@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Literal
 
 from pymongo import MongoClient
 
@@ -7,12 +7,13 @@ from osirisdata.utils import osiris_utils
 
 class OsirisIO:
 
-    def __init__(self, connection: str, database: str, validation: bool = True):
+    def __init__(self, connection: str, database: str, validation: bool = True, validation_extra: Literal["allow","ignore", "forbid"] = "ignore"):
         self.client : MongoClient = MongoClient(connection)
         self.osiris = self.client[database]
         self.validation = validation
+        self.validation_extra = validation_extra
         if self.validation:
-            self.validators = osiris_utils.getValidators(self.osiris)
+            self.validators = osiris_utils.getValidators(self.osiris, self.validation_extra)
 
 
     def _check_activity(self, element: dict) -> dict[str, Any]:

@@ -40,7 +40,7 @@ make install
 
 This is a short example on how to use the OsirisIO function:
 
-First you have to initialize a instance of OsirisIO with your MongoDB connection information. OsirisIO will automatically build pydantic models for the all defined activity types in OSIRIS. This can be turned off by setting `validation` to `False`.
+First you have to initialize a instance of OsirisIO with your MongoDB connection information. OsirisIO will automatically build [pydantic](https://pydantic.dev/docs/) models for the all defined activity types of your OSIRIS instance. This can be turned off by setting `validation` to `False`. The option `validate_extra` is used to define how the pydantic models should behave when encountering field names that are not defined in the activity types of your OSIRIS instance. You can choose between `allow`, `ignore` or `forbid`, for more information see [here].(https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel.model_construct)
 
 Import and initialize:
 ```python
@@ -49,7 +49,8 @@ from osirisdata.osiris_io import OsirisIO
 OSIRIS = OsirisIO(
     connection="MONGODB CONNECTION STRING", 
     database="NAME OF YOUR OSIRIS DATABASE IN MONGODB"
-    validation=True
+    validation=True, # optional, default = True
+    validate_extra='ignore' # optional, default = ignore
 )
 ```
 

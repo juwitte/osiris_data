@@ -194,7 +194,7 @@ def parse_admin_field(admin_fields: Cursor) -> dict[str, dict]:
 
 
 def build_validator(
-    key: str, type_fields: list[dict], admin_fields_dict: dict[str, dict[str, type]]
+    key: str, type_fields: list[dict], admin_fields_dict: dict[str, dict[str, type]], validation_extra: Literal["allow","ignore", "forbid"] = "ignore"
 ) -> BaseModel:
     data_structure: dict[str, Any] = {}
 
@@ -266,7 +266,7 @@ def build_validator(
 
     # print("DATASTRUCTURE:")
     # print(data_structure)
-    return create_model(key, __config__=ConfigDict(extra='ignore'), **data_structure)
+    return create_model(key, __config__=ConfigDict(extra=validation_extra), **data_structure)
 
 
 def set_dynamic_literals(osiris: Database):
@@ -285,7 +285,7 @@ def set_dynamic_literals(osiris: Database):
     MODULES.update({"projects": {"projects": list[osiris_projects]}})
 
 
-def getValidators(osiris: Database) -> dict[str, BaseModel]:
+def getValidators(osiris: Database, validation_extra: Literal["allow","ignore", "forbid"] = "ignore") -> dict[str, BaseModel]:
     """
     Input:
         osiris: Connection to OSIRIS database
@@ -304,5 +304,5 @@ def getValidators(osiris: Database) -> dict[str, BaseModel]:
     for t in admin_types:
         key = f"{t['parent']}#{t['id']}"
         if t.get("fields"):
-            validators[key] = build_validator(key, t["fields"], admin_fields_dict)
+            validators[key] = build_validator(key, t["fields"], admin_fields_dict, validation_extra)
     return validators
