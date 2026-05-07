@@ -1,5 +1,5 @@
 
-# Setup optional jobs
+# Setup environment
 
 This library need Python to be installed. Please look up [how to install](https://wiki.python.org/moin/BeginnersGuide/Download) the latest Python version on your OS. You will also need `pip` to install packages.
 
