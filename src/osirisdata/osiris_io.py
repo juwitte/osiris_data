@@ -6,8 +6,8 @@ from osirisdata.utils import osiris_utils
 class OsirisIO:
 
     def __init__(self, connection: str, database: str):
-        client = MongoClient(connection)
-        self.osiris = client[database]
+        self.client : MongoClient = MongoClient(connection)
+        self.osiris = self.client[database]
 
         self.validators = osiris_utils.getValidators(self.osiris)
 
@@ -63,7 +63,7 @@ class OsirisIO:
             print(f"DOI {doi} exists in queue and was omitted.")
             return True
 
-    def get_activities(self, start_year: int = 0):
+    def get_publication_titles(self, start_year: int = 0):
         return self.osiris["activities"].find(
             {
                 "type": "publication",
@@ -71,6 +71,14 @@ class OsirisIO:
             },
             {"title": 1},
         )
+
+    def get_activities(self, start_year: int = 0):
+        return self.osiris["activities"].find(
+            {
+                "year": {"$gte": int(start_year)},
+            }
+        )
+
 
     def add_activity(self, element: dict):
         self._check_activity(element)
