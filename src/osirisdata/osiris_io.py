@@ -1,21 +1,38 @@
+from typing import Any, Literal
+
 from pymongo import MongoClient
+
+from osirisdata.utils import osiris_utils
 
 
 class OsirisIO:
 
-    def __init__(self, connection: str, database: str):
-        client = MongoClient(connection)
-        self.osiris = client[database]
+    def __init__(self, connection: str, database: str, validation: bool = True, validation_extra: Literal["allow","ignore", "forbid"] = "ignore"):
+        self.client : MongoClient = MongoClient(connection)
+        self.osiris = self.client[database]
+        self.validation = validation
+        self.validation_extra = validation_extra
+        if self.validation:
+            self.validators = osiris_utils.getValidators(self.osiris, self.validation_extra)
 
-    def _check_activity(self, element: dict):
-        activity_type = element.get("subtype")
+
+    def _check_activity(self, element: dict) -> dict[str, Any]:
+        activity_type = element.get("type")
         if not activity_type:
+            raise KeyError("Activity needs 'type' key")
+        activity_subtype = element.get("subtype")
+        if not activity_subtype:
             raise KeyError("Activity needs 'subtype' key")
-        osiris_type = self.osiris["adminTypes"].find_one({"id": activity_type})
+        osiris_type = self.osiris["adminTypes"].find_one({"id": activity_subtype})
         if not osiris_type:
             raise KeyError(f"Activity type {activity_type} not found in OSIRIS")
+        if not self.validation:
+            return element
+        return self.validators[f"{activity_type}#{activity_subtype}"].model_validate(element).model_dump()
 
-    def get_user_id(self, name_last: str, name_first: str = "", orcid: str=None):
+
+
+    def get_user_id(self, name_last: str, name_first: str = "", orcid: str | None = None) -> str | None:
         if orcid:
             user = self.osiris["persons"].find_one({"orcid": orcid})
             if user:
@@ -32,7 +49,7 @@ class OsirisIO:
             return user["username"]
         return None
 
-    def get_journal(self, issn: list[str] | str) -> dict:
+    def get_journal(self, issn: list[str] | str):
         if isinstance(issn, list):
             return self.osiris["journals"].find_one({"issn": {"$in": issn}})
         else:
@@ -42,7 +59,7 @@ class OsirisIO:
         new_doc = self.osiris["journals"].insert_one(new_journal)
         return new_doc.inserted_id
 
-    def check_existence(self, doi: str, pubmed: str):
+    def check_existence(self, doi: str, pubmed: str) -> bool:
         if doi and self.osiris["activities"].count_documents({"doi": doi}) > 0:
             print(f"DOI {doi} exists in activities and was omitted.")
             return True
@@ -52,8 +69,9 @@ class OsirisIO:
         if self.osiris["queue"].count_documents({"doi": doi}) > 0:
             print(f"DOI {doi} exists in queue and was omitted.")
             return True
+        return False
 
-    def get_activities(self, start_year: int = 0):
+    def get_publication_titles(self, start_year: int = 0):
         return self.osiris["activities"].find(
             {
                 "type": "publication",
@@ -62,8 +80,16 @@ class OsirisIO:
             {"title": 1},
         )
 
-    def add_activity(self, element: dict):
-        self._check_activity(element)
+    def get_activities(self, start_year: int = 0):
+        return self.osiris["activities"].find(
+            {
+                "year": {"$gte": int(start_year)},
+            }
+        )
+
+
+    def add_activity(self, element: dict) -> None:
+        element = self._check_activity(element)
         self.osiris["activities"].insert_one(element)
 
     def get_activity_by_id(self, id, id_type="_id"):

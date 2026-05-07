@@ -41,7 +41,7 @@ class OpenAlexParser:
 
         self.possible_duplicates = []
         if not ignore_duplicates:
-            osiris_activities = self.osiris.get_activities(self.start_year)
+            osiris_activities = self.osiris.get_publication_titles(self.start_year)
             self.possible_duplicates = [
                 (i.get("_id"), i.get("title")) for i in osiris_activities
             ]
@@ -115,7 +115,7 @@ class OpenAlexParser:
     def queue_job(self, ignore_existing=True, ignore_types=[]):
         already_imported = []
         if ignore_existing:
-            already_imported = [i.get("openalex") for i in self.osiris.get_activities()]
+            already_imported = [i.get("openalex") for i in self.osiris.get_publication_titles()]
 
         for element in self.get_works():
             # print(element)
@@ -138,7 +138,7 @@ class OpenAlexParser:
 
     def update_job(self):
 
-        for activity in self.osiris.get_activities():
+        for activity in self.osiris.get_publication_titles():
             if doi := activity.get("doi"):
                 element = self.get_work(doi, "doi")
             # elif openalex_id := activity.get('openalex'):
@@ -208,7 +208,13 @@ class OpenAlexParser:
         authors = []
         for author in work["authorships"]:
             # match via name and ORCID
-            name = HumanName(author["author"]["display_name"])
+            
+            p_name = author["author"]["display_name"]
+            if not p_name:
+                p_name = author["raw_author_name"]
+
+            name = HumanName(p_name)
+
             orcid = author["author"].get("orcid")
             if orcid:
                 orcid = orcid.replace("https://orcid.org/", "")
