@@ -12,7 +12,7 @@ Use `OsirisIO` to operate on the MongoDB of your OSIRIS. This included import of
 
 This library need Python to be installed. Please look up [how to install](https://wiki.python.org/moin/BeginnersGuide/Download) the latest Python version on your OS. You will also need `pip` to install packages.
 
-When you have Python installed, you can create an virtual environment (see [here](https://docs.python.org/3/library/venv.html) for more information on python virtual environments). 
+When you have Python installed, you can create an virtual environment (see [here](https://docs.python.org/3/library/venv.html)) for more information on python virtual environments). 
 
 This command will create a folder named 'venv' and all needed files for the virtual environment with in the folder:
 
@@ -55,7 +55,7 @@ If there are no Errors you can find the JSON schemas of all your activity types 
 
 This is a short example on how to use the OsirisIO function:
 
-First you have to initialize a instance of OsirisIO with your MongoDB connection information. OsirisIO will automatically build [pydantic](https://pydantic.dev/docs/) models for the all defined activity types of your OSIRIS instance. This can be turned off by setting `validation` to `False`. The option `validate_extra` is used to define how the pydantic models should behave when encountering field names that are not defined in the activity types of your OSIRIS instance. You can choose between `allow`, `ignore` or `forbid`, for more information see [here].(https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel.model_construct)
+First you have to initialize a instance of OsirisIO with your MongoDB connection information. OsirisIO will automatically build [pydantic](https://pydantic.dev/docs/) models for the all defined activity types of your OSIRIS instance. This can be turned off by setting `validation` to `False`. The option `validate_extra` is used to define how the pydantic models should behave when encountering field names that are not defined in the activity types of your OSIRIS instance. You can choose between `allow`, `ignore` or `forbid`, for more information see [here](https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel.model_construct).
 
 Import and initialize:
 ```python
